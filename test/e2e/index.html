@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>prefetchjs Library end to end test page</title>
+</head>
+<body>
+<h1>prefetchjs Library end to end test page</h1>
+
+<p>Please look at the console.</p>
+
+<div id="output"></div>
+
+<script type="module">
+  // trying end to end testing
+  import { 
+  name,
+  PreFetcher,
+  } from '../dist/prefetchjs.mjs';
+  console.log("Hello from wassilyjs Library!");
+  console.log("The name of the library is: " + name);
+  window.library_name = name;
+
+  const pf = new PreFetcher('/test/e2e/', ['a.txt', 'b.txt']);
+  console.log("The prefetcher is: ", pf);
+
+  const output = document.getElementById('output');
+
+  function arrayBufferToString(buffer) {
+    const decoder = new TextDecoder('utf-8');
+    return decoder.decode(buffer);
+  };
+  
+  async function fetchAndDisplayFile(index) {
+    try {
+      const buffer = await pf.fetch_buffer(index)
+      const text = arrayBufferToString(buffer);
+      console.log("for", index, "the file content is: ", text);
+      const div = document.createElement('div');
+      div.innerText = text;
+      output.appendChild(div);
+      window.fetched_content = text.trim();
+    } catch (error) {
+      console.error("Error fetching file: ", error);
+      document.getElementById('output').innerText = "Error fetching file: " + error;
+    }
+  };
+  fetchAndDisplayFile(0);
+</script>
+</body>
+</html>
