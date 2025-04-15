@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>prefetchjs Library Demo</title>
+</head>
+<body>
+<h1>prefetchjs Library Demos</h1>
+
+<p>Please look at the console.</p>
+
+<div id="output"></div>
+
+<script type="module">
+  import { 
+  name,
+  PreFetcher,
+  } from '../dist/prefetchjs.mjs';
+  debugger;
+  console.log("Hello from prefetchjs Library!");
+  console.log("The name of the library is: " + name);
+  const pf = new PreFetcher('./', ['a.txt', 'b.txt']);
+  console.log("The prefetcher is: ", pf);
+
+  function arrayBufferToString(buffer) {
+    const decoder = new TextDecoder('utf-8');
+    return decoder.decode(buffer);
+  };
+
+  const output = document.getElementById('output');
+
+  async function fetchAndDisplayFile(index) {
+    try {
+      const buffer = await pf.fetch_buffer(index)
+      const text = arrayBufferToString(buffer);
+      console.log("for", index, "the file content is: ", text);
+      const div = document.createElement('div');
+      div.innerText = text;
+      output.appendChild(div);
+    } catch (error) {
+      console.error("Error fetching file: ", error);
+      document.getElementById('output').innerText = "Error fetching file: " + error;
+    }
+  }
+
+  fetchAndDisplayFile(0);
+  fetchAndDisplayFile(1);
+  /*
+  const payload = "ping payload";
+  console.log("The payload is: " + payload);
+  pf.ping(payload)
+    .then((response) => {
+      console.log("Ping response: ", response);
+      document.getElementById('output').innerText = "Ping response: " + JSON.stringify(response.data);
+      pf.shutDown();
+    })
+    .catch((error) => {
+      console.error("Error during ping: ", error);
+      document.getElementById('output').innerText = "Error during ping: " + error;
+      pf.shutDown();
+    });
+    */
+</script>
+</body>
+</html>
